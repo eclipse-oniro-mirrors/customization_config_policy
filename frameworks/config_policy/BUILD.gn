@@ -58,7 +58,7 @@ if (defined(ohos_lite) && ohos_kernel_type == "liteos_m") {
     external_deps = [
       "bounds_checking_function:libsec_shared",
       "hilog:libhilog_base",
-      "init:libbegetutil",
+      "init:libsystemparam",
     ]
     install_images = [
       "system",
@@ -68,16 +68,6 @@ if (defined(ohos_lite) && ohos_kernel_type == "liteos_m") {
       "chipsetsdk_sp",
       "platformsdk",
       "sasdk",
-    ]
-    subsystem_name = "customization"
-    part_name = "config_policy"
-  }
-  ohos_static_library("configpolicy_util_for_init_static") {
-    sources = config_policy_sources
-    public_configs = [ ":config_policy_config" ]
-    external_deps = [
-      "bounds_checking_function:libsec_shared",
-      "init:export_headers_lib",
     ]
     subsystem_name = "customization"
     part_name = "config_policy"
