@@ -15,6 +15,7 @@
 
 #include "config_policy_ffi.h"
 
+#include <string>
 #include <vector>
 #include <securec.h>
 #include "config_policy_utils.h"
@@ -25,7 +26,7 @@ namespace OHOS::Customization::ConfigPolicy {
 
 static constexpr int MAX_MALLOC_LEN = 1024;
 
-char** MallocCStringArr(const std::vector<const char*>& origin)
+char** MallocCStringArr(const std::vector<std::string>& origin)
 {
     if (origin.empty()) {
         return nullptr;
@@ -39,12 +40,12 @@ char** MallocCStringArr(const std::vector<const char*>& origin)
         return nullptr;
     }
     for (size_t i = 0; i < size; i++) {
-        size_t len = strlen(origin[i]) + 1;
+        size_t len = origin[i].size() + 1;
         arr[i] = static_cast<char*>(malloc(sizeof(char) * len));
         if (arr[i] == nullptr) {
             continue;
         }
-        errno_t ret = strcpy_s(arr[i], len, origin[i]);
+        errno_t ret = strcpy_s(arr[i], len, origin[i].c_str());
         if (ret != 0) {
             free(arr[i]);
             arr[i] = nullptr;
@@ -60,7 +61,7 @@ extern "C" {
         RetDataCArrString ret = { .code = SUCCESS_CODE, .data = { .head = nullptr, .size = 0 } };
         CfgDir *cfgDir = GetCfgDirList();
 
-        std::vector<const char*> dirList;
+        std::vector<std::string> dirList;
         if (cfgDir != nullptr) {
             for (size_t i = 0; i < MAX_CFG_POLICY_DIRS_CNT; i++) {
                 if (cfgDir->paths[i] != nullptr) {
@@ -86,7 +87,7 @@ extern "C" {
         std::string extra("");
         CfgFiles *cfgFiles = GetCfgFilesEx(relPath, FOLLOWX_MODE_DEFAULT, extra.c_str());
 
-        std::vector<const char*> fileList;
+        std::vector<std::string> fileList;
         if (cfgFiles != nullptr) {
             for (size_t i = 0; i < MAX_CFG_POLICY_DIRS_CNT; i++) {
                 if (cfgFiles->paths[i] != nullptr) {
