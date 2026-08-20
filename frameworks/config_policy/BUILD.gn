@@ -43,6 +43,13 @@ if (defined(ohos_lite) && ohos_kernel_type == "liteos_m") {
 } else {
   ohos_shared_library("configpolicy_util") {
     branch_protector_ret = "pac_ret"
+    sanitize = {
+      cfi = true
+      cfi_cross_dso = true
+      cfi_no_nvcall = true
+      cfi_vcall_icall_only = true
+      debug = false
+    }
     sources = config_policy_sources
     public_configs = [ ":config_policy_config" ]
     deps = [ "etc:customization_etc" ]
