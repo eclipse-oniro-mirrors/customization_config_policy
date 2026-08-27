@@ -57,6 +57,7 @@ if (defined(ohos_lite) && ohos_kernel_type == "liteos_m") {
       "bounds_checking_function:libsec_shared",
       "init:libsystemparam",
     ]
+    version_script = "./config_policy.map"
     install_images = [
       "system",
       "updater",
