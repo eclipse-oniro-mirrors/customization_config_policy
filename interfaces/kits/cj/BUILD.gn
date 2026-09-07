@@ -49,6 +49,9 @@ ohos_shared_library("cj_config_policy_ffi") {
   if (current_os == "mingw") {
     defines += [ "WINDOWS_PLATFORM" ]
   }
+
+  version_script = "libcj_config_policy_ffi.map"
+
   branch_protector_ret = "pac_ret"
   innerapi_tags = [ "platformsdk" ]
   subsystem_name = "customization"
