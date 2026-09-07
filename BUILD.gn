@@ -1,4 +1,4 @@
-# Copyright (c) 2022-2025 Huawei Device Co., Ltd.
+# Copyright (c) 2022-2026 Huawei Device Co., Ltd.
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -18,9 +18,13 @@ group("config_policy_components") {
     deps = [
       "./frameworks/config_policy:configpolicy_util",
       "./interfaces/kits/cj:cj_config_policy_ffi",
-      "./interfaces/kits/js:configpolicy",
-      "./interfaces/kits/js:customconfig",
     ]
+    if (thirdparty_node_support) {
+      deps += [
+        "./interfaces/kits/js:configpolicy",
+        "./interfaces/kits/js:customconfig",
+      ]
+    }
   } else {
     deps = [ "./frameworks/config_policy:configpolicy_util" ]
   }
