@@ -29,13 +29,14 @@
     "deps": {
       "components": [
         "ability_runtime",
-        "c_utils",
-        "hisysevent",
-        "hilog",
-        "napi",
-        "init",
         "bounds_checking_function",
+        "c_utils",
+        "hilog",
+        "hisysevent",
+        "init",
         "ipc",
+        "napi",
+        "node",
         "runtime_core"
       ],
       "third_party": []
