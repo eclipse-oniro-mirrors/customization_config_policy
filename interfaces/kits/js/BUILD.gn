@@ -33,6 +33,7 @@ ohos_shared_library("configpolicy") {
     "napi:ace_napi",
     "node:node_header_notice",
   ]
+  version_script = "./config_policy_js.map"
   relative_install_dir = "module"
   subsystem_name = "customization"
   part_name = "config_policy"
@@ -59,6 +60,7 @@ ohos_shared_library("customconfig") {
     "napi:ace_napi",
     "node:node_header_notice",
   ]
+  version_script = "./config_policy_js.map"
   relative_install_dir = "module/customization"
   subsystem_name = "customization"
   part_name = "config_policy"
