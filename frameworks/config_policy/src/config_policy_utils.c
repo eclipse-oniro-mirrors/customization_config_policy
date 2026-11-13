@@ -21,11 +21,11 @@
 #include <unistd.h>
 
 #include "config_policy_impl.h"
-#ifndef __LITEOS__
-#include "init_param.h"
+#ifdef SUPPORT_INIT_PARAM
+#include "parameter.h"
 #endif
 
-#ifndef __LITEOS__
+#ifdef SUPPORT_INIT_PARAM
 static const size_t MIN_APPEND_LEN = 32;
 // set min opkey length
 static const unsigned int MIN_OPKEY_LEN = 3;
@@ -39,6 +39,11 @@ static const char * const SEP_FOR_X_VALUE = ":-";
 
 static const char * const CUST_OPKEY0 = "telephony.sim.opkey0";
 static const char * const CUST_OPKEY1 = "telephony.sim.opkey1";
+
+#define IS_READ_ONLY_PARAM(name)  \
+    ((strncmp((name), "const.", strlen("const.")) == 0) ||  \
+    (strncmp((name), "ro.", strlen("ro.")) == 0) ||         \
+    (strncmp((name), "ohos.boot.", strlen("ohos.boot.")) == 0))
 
 typedef struct {
     size_t size;   // allocated buffer size of p
@@ -58,10 +63,15 @@ typedef struct {
 static char gConfigPolicy[MINI_CONFIG_POLICY_BUF_SIZE] = {0};
 void SetMiniConfigPolicy(const char *policy)
 {
+    if (policy == NULL) {
+        return;
+    }
     if (gConfigPolicy[0] != 0) {
         return; // now only set once
     }
-    (void)strcpy_s(gConfigPolicy, sizeof(gConfigPolicy), policy);
+    if (strcpy_s(gConfigPolicy, sizeof(gConfigPolicy), policy) != 0) {
+        gConfigPolicy[0] = 0;
+    }
 }
 
 __WEAK void TrigSetMiniConfigPolicy()
@@ -77,7 +87,7 @@ __WEAK void TrigSetMiniConfigPolicy()
  */
 typedef char *(*QueryFunc)(const char *key);
 
-#ifndef __LITEOS__
+#ifdef SUPPORT_INIT_PARAM
 static char *ExpandStr(char *src, const char *def, QueryFunc queryFunc);
 
 static inline size_t Min(size_t a, size_t b)
@@ -89,7 +99,7 @@ static inline size_t Max(size_t a, size_t b)
 {
     return a > b ? a : b;
 }
-#endif // __LITEOS__
+#endif // SUPPORT_INIT_PARAM
 
 static void FreeIf(void *p)
 {
@@ -98,52 +108,65 @@ static void FreeIf(void *p)
     }
 }
 
-#ifndef __LITEOS__
+#ifdef SUPPORT_INIT_PARAM
 static char *CustGetSystemParam(const char *name)
 {
     char *value = NULL;
-    unsigned int len = 0;
-
-    if (SystemGetParameter(name, NULL, &len) != 0 || len <= 0 || len > PARAM_CONST_VALUE_LEN_MAX) {
-        return NULL;
+    uint32_t len = PARAM_VALUE_LEN_MAX;
+    if (IS_READ_ONLY_PARAM(name)) {
+        len = PARAM_CONST_VALUE_LEN_MAX;
     }
     value = (char *)calloc(len, sizeof(char));
-    if (value != NULL && SystemGetParameter(name, value, &len) == 0 && value[0]) {
-        return value;
+    if (value) {
+        int ret = GetParameter(name, NULL, value, len);
+        if (ret > 0 && value[0]) {
+            return value;
+        }
     }
     FreeIf(value);
+    return NULL;
+}
+
+static char *GetDefaultOpkeyValue()
+{
+    const char *opkeyNames[] = {
+        CUST_OPKEY0,
+        CUST_OPKEY1
+    };
+    int count = sizeof(opkeyNames) / sizeof(opkeyNames[0]);
+    for (int i = 0; i < count; i++) {
+        char *opkeyValue = CustGetSystemParam(opkeyNames[i]);
+        if (strlen(opkeyValue) > MIN_OPKEY_LEN) {
+            return opkeyValue;
+        }
+        FreeIf(opkeyValue);
+    }
     return NULL;
 }
 
 static char *GetOpkeyPath(int type)
 {
     char *result = NULL;
-    const char * const opKeyDir = "etc/carrier/";
-    const char *opKeyName = CUST_OPKEY0;
+    const char * const opkeyDir = "etc/carrier/";
+    char *opkeyValue = NULL;
     if (type == FOLLOWX_MODE_SIM_1) {
-        opKeyName = CUST_OPKEY0;
+        opkeyValue = CustGetSystemParam(CUST_OPKEY0);
     } else if (type == FOLLOWX_MODE_SIM_2) {
-        opKeyName = CUST_OPKEY1;
+        opkeyValue = CustGetSystemParam(CUST_OPKEY1);
     } else {
-        unsigned int len = 0;
-        if (SystemGetParameter(CUST_OPKEY0, NULL, &len) == 0 && len > MIN_OPKEY_LEN) {
-            opKeyName = CUST_OPKEY0;
-        } else if (SystemGetParameter(CUST_OPKEY1, NULL, &len) == 0 && len > MIN_OPKEY_LEN) {
-            opKeyName = CUST_OPKEY1;
-        }
+        opkeyValue = GetDefaultOpkeyValue();
     }
-    char *opKeyValue = CustGetSystemParam(opKeyName);
-    if (opKeyValue == NULL) {
+    if (opkeyValue == NULL) {
         return NULL;
     }
-    size_t bufSize = strlen(opKeyDir) + strlen(opKeyValue) + 1;
+    size_t bufSize = strlen(opkeyDir) + strlen(opkeyValue) + 1;
     bufSize = Min(bufSize, MAX_PATH_LEN);
     result = (char *)calloc(bufSize, sizeof(char));
-    if (result != NULL && sprintf_s(result, bufSize, "%s%s", opKeyDir, opKeyValue) > 0) {
-        FreeIf(opKeyValue);
+    if (result != NULL && sprintf_s(result, bufSize, "%s%s", opkeyDir, opkeyValue) > 0) {
+        FreeIf(opkeyValue);
         return result;
     }
-    FreeIf(opKeyValue);
+    FreeIf(opkeyValue);
     FreeIf(result);
     return NULL;
 }
@@ -169,7 +192,7 @@ static SplitedStr *SplitStr(char *str, char delim)
     }
     return result;
 }
-#endif // __LITEOS__
+#endif // SUPPORT_INIT_PARAM
 
 static void FreeSplitedStr(SplitedStr *p)
 {
@@ -180,7 +203,7 @@ static void FreeSplitedStr(SplitedStr *p)
     }
 }
 
-#ifndef __LITEOS__
+#ifdef SUPPORT_INIT_PARAM
 // get follow x rule from param variant
 // *mode: read from contains param variant, mode is output param.
 // return: extra path rule.
@@ -380,7 +403,7 @@ static SplitedStr *GetFollowXPathByMode(const char *relPath, int followMode, con
 {
     return NULL;
 }
-#endif
+#endif // SUPPORT_INIT_PARAM
 
 static void GetCfgDirRealPolicyValue(CfgDir *res)
 {
@@ -394,10 +417,10 @@ static void GetCfgDirRealPolicyValue(CfgDir *res)
     if (gConfigPolicy[0] != '\0') {
         res->realPolicyValue = strdup(gConfigPolicy);
     }
-#elif defined(__LITEOS__)
-    // use default, now do nothing
-#else
+#elif defined(SUPPORT_INIT_PARAM)
     res->realPolicyValue = CustGetSystemParam(CUST_KEY_POLICY_LAYER);
+#else
+    // use default, now do nothing
 #endif
     if (res->realPolicyValue != NULL && res->realPolicyValue[0]) {
         return;

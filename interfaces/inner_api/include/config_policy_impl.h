@@ -37,7 +37,7 @@ extern "C" {
 #define DEFAULT_LAYER ROOT_PREFIX "/system:" ROOT_PREFIX "/chipset:" ROOT_PREFIX "/sys_prod:" ROOT_PREFIX "/chip_prod"
 
 #ifdef __LITEOS_M__
-#define MINI_CONFIG_POLICY_BUF_SIZE 256
+#define MINI_CONFIG_POLICY_BUF_SIZE 512
 // for mini system, if exceed max size will not set
 void SetMiniConfigPolicy(const char *policy);
 __WEAK void TrigSetMiniConfigPolicy();
