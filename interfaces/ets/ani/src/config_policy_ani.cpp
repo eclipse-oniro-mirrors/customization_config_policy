@@ -95,6 +95,8 @@ bool ConfigPolicyAni::ParseFollowMode(
         case FOLLOWX_MODE_SIM_1:
             [[fallthrough]];
         case FOLLOWX_MODE_SIM_2:
+            [[fallthrough]];
+        case FOLLOWX_MODE_SIM_3:
             break;
         case FOLLOWX_MODE_USER_DEFINED:
             if (!hasExtra) {

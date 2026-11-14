@@ -23,6 +23,7 @@
             <option name="shell" value="mkdir -p /system/etc/carrier/46060/etc/custxmltest/"/>
             <option name="shell" value="mkdir -p /sys_prod/etc/carrier/46060/etc/custxmltest/"/>
             <option name="shell" value="mkdir -p /sys_prod/etc/carrier/46061/etc/custxmltest/"/>
+            <option name="shell" value="mkdir -p /sys_prod/etc/carrier/46062/etc/custxmltest/"/>
             <option name="shell" value="mkdir -p /sys_prod/etc/carrier/46060/etc/custxmltest/custxmltest/"/>
             <option name="shell" value="touch /system/etc/custxmltest/system.xml"/>
             <option name="shell" value="touch /system/etc/custxmltest/both.xml"/>
@@ -31,6 +32,7 @@
             <option name="shell" value="touch /sys_prod/etc/custxmltest/user.xml"/>
             <option name="shell" value="touch /sys_prod/etc/carrier/46060/etc/custxmltest/user.xml"/>
             <option name="shell" value="touch /sys_prod/etc/carrier/46061/etc/custxmltest/user.xml"/>
+            <option name="shell" value="touch /sys_prod/etc/carrier/46062/etc/custxmltest/user.xml"/>
             <option name="shell" value="touch /sys_prod/etc/carrier/46060/etc/custxmltest/both.xml"/>
             <option name="shell" value="touch /sys_prod/etc/carrier/46060/etc/custxmltest/custxmltest/both.xml"/>
         </preparer>

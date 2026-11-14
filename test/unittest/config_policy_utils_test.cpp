@@ -24,6 +24,7 @@
 
 constexpr const char *CUST_OPKEY0 = "telephony.sim.opkey0";
 constexpr const char *CUST_OPKEY1 = "telephony.sim.opkey1";
+constexpr const char *CUST_OPKEY3 = "telephony.sim.opkey3";
 #endif
 
 using namespace testing::ext;
@@ -39,6 +40,7 @@ void ConfigPolicyUtilsTest::SetUpTestCase(void)
 {
     SystemSetParameter(CUST_OPKEY0, "46060");
     SystemSetParameter(CUST_OPKEY1, "46061");
+    SystemSetParameter(CUST_OPKEY3, "46062");
 }
 #endif
 
@@ -163,7 +165,7 @@ HWTEST_F(ConfigPolicyUtilsTest, CfgPolicyUtilsFuncTest007, TestSize.Level1)
 
 /**
  * @tc.name: CfgPolicyUtilsFuncTest008
- * @tc.desc: Test GetOneCfgFile & GetCfgFiles function, follow sim1 rule.
+ * @tc.desc: Test GetOneCfgFile & GetCfgFiles function, follow sim2 rule.
  * @tc.type: FUNC
  * @tc.require: issueI5NYDH
  */
@@ -232,6 +234,18 @@ HWTEST_F(ConfigPolicyUtilsTest, CfgPolicyUtilsFuncTest011, TestSize.Level1)
     CfgDir *res = nullptr;
     FreeCfgDirList(res);
     EXPECT_TRUE(res == nullptr);
+}
+
+/**
+ * @tc.name: CfgPolicyUtilsFuncTest012
+ * @tc.desc: Test GetOneCfgFile & GetCfgFiles function, follow sim3 rule.
+ * @tc.type: FUNC
+ * @tc.require: issueI5NYDH
+ */
+HWTEST_F(ConfigPolicyUtilsTest, CfgPolicyUtilsFuncTest012, TestSize.Level1)
+{
+    const char *testPathSuffix = "etc/custxmltest/user.xml";
+    EXPECT_TRUE(TestGetCfgFile(testPathSuffix, FOLLOWX_MODE_SIM_3, NULL));
 }
 #endif // __LITEOS__
 } // namespace OHOS

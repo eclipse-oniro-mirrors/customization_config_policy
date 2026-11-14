@@ -84,6 +84,9 @@ void ConfigPolicyNapi::CreateFollowXModeObject(napi_env env, napi_value value)
     napi_value nSim2Mode;
     NAPI_CALL_RETURN_VOID(env, napi_create_int32(env, static_cast<int32_t>(FOLLOWX_MODE_SIM_2), &nSim2Mode));
     NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, value, "SIM_2", nSim2Mode));
+    napi_value nSim3Mode;
+    NAPI_CALL_RETURN_VOID(env, napi_create_int32(env, static_cast<int32_t>(FOLLOWX_MODE_SIM_3), &nSim3Mode));
+    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, value, "SIM_3", nSim3Mode));
     napi_value nUserDefineMode;
     NAPI_CALL_RETURN_VOID(env, napi_create_int32(env, static_cast<int32_t>(FOLLOWX_MODE_USER_DEFINED),
         &nUserDefineMode));
@@ -502,6 +505,8 @@ napi_value ConfigPolicyNapi::ParseFollowMode(napi_env env, int32_t &param, napi_
         case FOLLOWX_MODE_SIM_1:
             [[fallthrough]];
         case FOLLOWX_MODE_SIM_2:
+            [[fallthrough]];
+        case FOLLOWX_MODE_SIM_3:
             break;
         case FOLLOWX_MODE_USER_DEFINED:
             if (!hasExtra) {
