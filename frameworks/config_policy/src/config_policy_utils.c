@@ -136,7 +136,7 @@ static char *GetDefaultOpkeyValue()
     int count = sizeof(opkeyNames) / sizeof(opkeyNames[0]);
     for (int i = 0; i < count; i++) {
         char *opkeyValue = CustGetSystemParam(opkeyNames[i]);
-        if (strlen(opkeyValue) > MIN_OPKEY_LEN) {
+        if (opkeyValue != NULL && strlen(opkeyValue) > MIN_OPKEY_LEN) {
             return opkeyValue;
         }
         FreeIf(opkeyValue);
