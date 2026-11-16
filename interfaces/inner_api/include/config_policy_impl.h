@@ -40,7 +40,10 @@ extern "C" {
 #define MINI_CONFIG_POLICY_BUF_SIZE 512
 // for mini system, if exceed max size will not set
 void SetMiniConfigPolicy(const char *policy);
-__WEAK void TrigSetMiniConfigPolicy();
+// Note: keep this a normal declaration. __WEAK belongs to the definition in
+// config_policy_utils.c only; putting it on the declaration would make every
+// definition seen after this header weak and silently break strong overrides.
+void TrigSetMiniConfigPolicy();
 #endif
 
 #ifdef __cplusplus

@@ -78,6 +78,18 @@ __WEAK void TrigSetMiniConfigPolicy()
 {
     return;
 }
+
+#define PARAM_CONST_VALUE_LEN_MAX 4096
+#define PARAM_VALUE_LEN_MAX       96
+
+__WEAK int GetParameter(const char *key, const char *def, char *value, uint32_t len)
+{
+    (void)key;
+    (void)def;
+    (void)value;
+    (void)len;
+    return -1;
+}
 #endif
 
 /**
