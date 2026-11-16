@@ -39,6 +39,7 @@ static const char * const SEP_FOR_X_VALUE = ":-";
 
 static const char * const CUST_OPKEY0 = "telephony.sim.opkey0";
 static const char * const CUST_OPKEY1 = "telephony.sim.opkey1";
+static const char * const CUST_OPKEY3 = "telephony.sim.opkey3";
 
 #define IS_READ_ONLY_PARAM(name)  \
     ((strncmp((name), "const.", strlen("const.")) == 0) ||  \
@@ -131,7 +132,8 @@ static char *GetDefaultOpkeyValue()
 {
     const char *opkeyNames[] = {
         CUST_OPKEY0,
-        CUST_OPKEY1
+        CUST_OPKEY1,
+        CUST_OPKEY3
     };
     int count = sizeof(opkeyNames) / sizeof(opkeyNames[0]);
     for (int i = 0; i < count; i++) {
@@ -153,6 +155,8 @@ static char *GetOpkeyPath(int type)
         opkeyValue = CustGetSystemParam(CUST_OPKEY0);
     } else if (type == FOLLOWX_MODE_SIM_2) {
         opkeyValue = CustGetSystemParam(CUST_OPKEY1);
+    } else if (type == FOLLOWX_MODE_SIM_3) {
+        opkeyValue = CustGetSystemParam(CUST_OPKEY3);
     } else {
         opkeyValue = GetDefaultOpkeyValue();
     }
@@ -278,6 +282,9 @@ static SplitedStr *GetFollowXPathByMode(const char *relPath, int followMode, con
             break;
         case FOLLOWX_MODE_SIM_2:
             followXPath = GetOpkeyPath(FOLLOWX_MODE_SIM_2);
+            break;
+        case FOLLOWX_MODE_SIM_3:
+            followXPath = GetOpkeyPath(FOLLOWX_MODE_SIM_3);
             break;
         case FOLLOWX_MODE_USER_DEFINED:
             followXPath = (extraPath && *extraPath) ? strdup(extraPath) : NULL;

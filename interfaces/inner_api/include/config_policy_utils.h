@@ -50,6 +50,8 @@ extern "C" {
 #define FOLLOWX_MODE_SIM_1        11
 // Follow rule by slot 2
 #define FOLLOWX_MODE_SIM_2        12
+// Follow rule by slot 3
+#define FOLLOWX_MODE_SIM_3        13
 // User defined follow rule, get follow_rule_add_path from @param extra
 // Notice: Follow rule in followx_file_list.cfg will be ignored.
 #define FOLLOWX_MODE_USER_DEFINED  100

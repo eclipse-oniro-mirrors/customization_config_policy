@@ -24,6 +24,7 @@ namespace configPolicy {
         SIM_DEFAULT = 10,
         SIM_1 = 11,
         SIM_2 = 12,
+        SIM_3 = 13,
         USER_DEFINED = 100
     }
 
