@@ -21,21 +21,22 @@ if (defined(ohos_lite)) {
 config_policy_sources = [ "src/config_policy_utils.c" ]
 config("config_policy_config") {
   include_dirs = [ "../../interfaces/inner_api/include" ]
+  if (defined(ohos_lite) && ohos_kernel_type == "liteos_m") {
+    if (config_policy_fs_prefix != "") {
+      print("cust config_policy_fs_prefix: ${config_policy_fs_prefix}")
+      defines = [ "ROOT_PREFIX=\"${config_policy_fs_prefix}\"" ]
+    }
+  }
 }
 
 if (defined(ohos_lite) && ohos_kernel_type == "liteos_m") {
   static_library("configpolicy_util") {
     sources = config_policy_sources
-    defines = []
-    if (config_policy_fs_prefix != "") {
-      print("cust config_policy_fs_prefix: ${config_policy_fs_prefix}")
-      defines += [ "ROOT_PREFIX=\"${config_policy_fs_prefix}\"" ]
-    }
     public_configs = [ ":config_policy_config" ]
     if (defined(global_parts_info) && defined(global_parts_info.startup_init)) {
       include_dirs = [ "//base/startup/init/interfaces/innerkits/include/syspara" ]
       deps = [ "//base/startup/init/services/param/liteos:param_client_lite" ]
-      defines += [ "SUPPORT_INIT_PARAM" ]
+      defines = [ "SUPPORT_INIT_PARAM" ]
     }
     external_deps = [ "bounds_checking_function:libsec_shared" ]
   }
